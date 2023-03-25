@@ -1,0 +1,71 @@
+.header{
+    height: 10%;
+}
+h1{
+    max-height: 40%;
+    padding-left: 30%;
+    padding-bottom: 1%;
+    margin-bottom: 1%;
+    font-size: 80px;
+    color: white;
+    background-color: rgb(201, 34, 16);
+}
+.link{
+    position: absolute;
+    left: 75%;
+    top: 40px;
+    
+}
+.link a {
+    text-decoration: none;
+    padding: 10px;
+    margin: 5px;
+    border: 2px rgb(201, 34, 16) solid;
+    background-color: rgb(00, 80, 80);  
+    text-decoration: none;
+    color: white;
+}
+
+
+
+
+
+.menu{
+    margin-bottom: 20px;
+    padding: 30px; 
+    padding-left: 30%; 
+    padding-right:0px ;
+   
+    background-color: rgb(00, 80, 80);
+}
+
+a{
+    text-decoration: none;
+    color: white;
+    background-color:rgb(00, 80, 80);
+    font-size: xx-large;
+    margin-right: 30px;
+
+}
+.resOp{
+    border: 2px solid rgb(00, 80, 80);
+    border-radius:5px; 
+    width:fit-content;
+    background-color:rgb(00, 80, 80);
+    text-align:center;
+    padding-left:15%;
+}   
+
+
+button{
+    margin: 20px;
+    margin-left: 30%;
+    height: 40px;
+    width: 30%;
+    color: white;
+    background-color: rgb(201, 34, 16);
+}
+
+
+
+
