@@ -1,11 +1,10 @@
-#storeResult{
+#storeResult, #Tresult{
     display: none;
     width: fit-content;
     font-size: larger;
     width: 100%;
     height: 70%;
     margin-left: 1%;
-    justify-content: space-between;
 }
 #storeResult table{
     width: 30%;
@@ -14,4 +13,12 @@
     margin-right: 10%;
     border: 2px solid black;
 }
-    
+#Tr{
+    display: none;
+    margin-left: 25%;
+    width: fit-content;
+    font-size: larger;
+    padding: 40px;
+    border: 2px solid rgb(00, 80, 80);  
+    width: 400px;
+}

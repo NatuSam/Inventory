@@ -48,7 +48,7 @@
     color: rgb(201, 34, 16);
     
 }
-#Check, #Add, #Take,#Addnum, #Store{
+#Check, #Add, #Take,#Addnum, #Store, #Tr{
     display: none;
     margin-left: 25%;
     width: fit-content;
