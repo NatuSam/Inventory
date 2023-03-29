@@ -11,12 +11,16 @@
             <h1>Inventory</h1>
         
         <div class="link">
-            <a href="index.php">Home</a>
-            <?php if(empty($_SESSION['Emp'])){
-                echo "<a href=\"login.php\">Login</a>";}
-             else
-                echo"<a href=\"login.php\">Logout</a>";
-            ?>
+            
+    <?php if(!empty($_SESSION['Emp'])):?>
+        <a href="index.php">Home</a>
+        <a href="login.php">Logout</a>       
+    <?php else:?>
+        <a href="index.php">Home</a>
+        <a href="login.php">Login</a>;
+    <?php endif;?>
             </div>
+
+            
     </body>
 </html>

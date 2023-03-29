@@ -6,6 +6,7 @@ h1{
     padding-left: 30%;
     padding-bottom: 1%;
     margin-bottom: 1%;
+    margin-top:  0%;
     font-size: 80px;
     color: white;
     background-color: rgb(201, 34, 16);
@@ -35,7 +36,6 @@ h1{
     padding: 30px; 
     padding-left: 30%; 
     padding-right:0px ;
-   
     background-color: rgb(00, 80, 80);
 }
 
@@ -48,12 +48,9 @@ a{
 
 }
 .resOp{
-    border: 2px solid rgb(00, 80, 80);
+    border: 2px solid rgb(201, 34, 16);
     border-radius:5px; 
-    width:fit-content;
-    background-color:rgb(00, 80, 80);
     text-align:center;
-    padding-left:15%;
 }   
 
 

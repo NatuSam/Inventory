@@ -1,5 +1,4 @@
 <?php
-
 require "connection.php";
 $action=0;
 
@@ -16,8 +15,9 @@ else{
     $action=2;
 }
 }
+
 else if($_SERVER['REQUEST_METHOD']=='POST' && !empty($_POST['newname'])){
-    $pcode=$_POST['P_code'];
+    $pcode=$_POST['Apcode'];
     $name=$_POST['newname'];
     $num=$_POST['no'];
     $store=$_POST['store'];
@@ -30,7 +30,7 @@ else if($_SERVER['REQUEST_METHOD']=='POST' && !empty($_POST['newname'])){
         $_SESSION['exist']=mysqli_fetch_assoc($result);
     }
     else{
-    $query = " insert into item( P_code,Name, No_items, S_id,Location) VALUES ('$pcode','$name','$num','$store','$place')";
+    $query = "insert into item(P_code,Name, No_items, S_id,Location) VALUES ('$pcode','$name','$num','$store','$place')";
     $result=mysqli_query($con,$query);
 
     $query = "select * from item where Name = '$name' limit 1";
@@ -125,19 +125,21 @@ else if($_SERVER['REQUEST_METHOD']=='POST' && (!empty($_POST['Tpcode'])||!empty(
        $action=2;
     }
 }
-else if($_SERVER['REQUEST_METHOD']=='POST' ){
-
-
+else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
+    $Ename=$_POST['Ename'];
+    $pos=$_POST['pos'];
+    $lang=$_POST['lang'];
+    $pass=$_POST['pword'];
+    $query="insert into employee(Name,Position,Language,Password) VALUES ('$Ename','$pos','$lang','$pass')";
+    $result=mysqli_query($con,$query);
 }
-
-
-
 ?>
 
 <html>
     <head>
         <title>Inventory</title>
         <script> 
+        
             function hide(x){ 
                 var C = 'none';
                 var A = 'none';
@@ -147,6 +149,7 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
                 var Ra = 'none';
                 var Rt = 'none';
                 var Tr = 'none';
+                var E = 'none';
             switch(x){                
                 case 1:              
                     C = 'block';
@@ -172,6 +175,9 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
                 case 8:
                     Tr='block';
                     break;
+                case 9:
+                    E='block';
+                    break;
                 default:
                     break;
                 }
@@ -182,48 +188,25 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
                 document.getElementById('Store').style.display=S;
                 document.getElementById('ResultA').style.display=Ra; 
                 document.getElementById('ResultT').style.display=Rt; 
-                document.getElementById('Tr').style.display=Tr; 
-                 
+                document.getElementById('Tr').style.display=Tr;
+                document.getElementById('newEmp').style.display=E;  
+                if(document.getElementById('Result')!=undefined){
+                document.getElementById('Result').style.display='none';}
                 document.getElementById('storeResult').style.display='none';   
                 document.getElementById('Tresult').style.display='none';   
-                document.getElementById('Result').style.display='none';   
+                  
             }
         </script>
-        <style>
-            #Results{display:none;}
-            #Tr{
-    display: none;
-    margin-left: 25%;
-    width: fit-content;
-    font-size: larger;
-    padding: 40px;
-    border: 2px solid rgb(00, 80, 80);  
-    width: 400px;
-}
-#Tresult{
-    display: none;
-    width:fit-content;
-    font-size: larger;
-    height: 70%;
-    margin-left: 1%;
-    justify-content: space-between;
-}
-#Tresult table{
-    width:90%;
-}
-#Tresult table td{
-    width: 20%;
-}
-    
-        </style>
         <link rel="stylesheet" href="home.css">
         <link rel="stylesheet" href="st.css">
+        
+        
     </head>
     <body>
       <?php require "header.php";?>
       <?php if(empty($_SESSION['Emp'])){
-              header("Location: login.php");
-              die;
+        $_SESSION['re']=$_GET['pc'];
+        header("Location: login.php"); 
       } ?>
       
             
@@ -231,8 +214,8 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
        <tr>
         <td></td>        
         <td rowspan="6" class="res">
-            <form   id="Check" method="GET">
-                Product Code <input type="text" name="pc" required><br>
+            <form   id="Check" method="GET" >
+             Product Code <input type="text" name="pc" required><br>
                 <button>Check</button>
             </form>
             
@@ -240,19 +223,19 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
             <form method="POST" id="Add">
                 <table>
                     <tr>
-                    <td>Product code: </td>
+                    <td>Product code:</td>
                     <td><input type="text" name="Apcode" required/></td></tr>
                     <tr>
-                    <td>Name of item: </td>
+                    <td>Name of item:</td>
                     <td><input type="text" name="newname" required/></td></tr>
                 <tr>
-                    <td>Number of items: </td>
+                    <td>Number of items:</td>
                     <td><input type="text" name="no" required/></td></tr>
                 <tr>
-                    <td>Store: </td>
+                    <td>Store:</td>
                     <td><input type="text" name="store" required/></td></tr>
                 <tr>
-                    <td>Placed at: </td>
+                    <td>Placed at:</td>
                     <td><input type="text" name="loc" required/></td></tr>
             </table>
                 <button>ADD</button>
@@ -262,23 +245,23 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
             <form method="POST" id="Addnum">
             <table>
                 <tr>
-                    <td>Product code:</td> 
-                    <td><input type="text" name="Anpcode" placeholder="1000" required/></td></tr>
+                    <td>Product code: </td> 
+                    <td><input type="text" name="Anpcode" required/></td></tr>
                 <tr>
                     <td>Amount: </td>
                     <td><input type="text" name="amt" required/></td></tr>
 
             </table>
-                <button>Add</button>
+                <button>Add:</button>
             </form>
 
             <form method="POST" id="Take">
             <table>
                 <tr>
                     <td>Product code:</td> 
-                    <td><input type="text" name="Tpcode" placeholder="1000" required/></td></tr>
+                    <td><input type="text" name="Tpcode"  required/></td></tr>
                 <tr>
-                    <td>Amount: </td>
+                <td>Amount:</td>   
                     <td><input type="text" name="amt" required/></td></tr>
 
             </table>
@@ -297,80 +280,140 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
             <form method="POST" id="ResultA" >
             <table>
                 <tr>
-                    <td>Product code:</td> 
+                    <td> Product Code </td> 
                     <td><?php echo $_SESSION['item']['P_code']; ?></td></tr>
                 <tr>
-                    <td>Amount: </td>
+                    <td> Amount:</td>
                     <td><input type="text" name="Addamt" required/></td></tr>
 
             </table>
-                <button>Add</button>
+                <button>Add:</button>
             </form>
 
             <form method="POST" id="ResultT">
             <table>
                 <tr>
-                    <td>Product code:</td> 
+                    <td>Product Code</td> 
                     <td><?php echo $_SESSION['item']['P_code']; ?></td></tr>
                 <tr>
-                    <td>Amount: </td>
+                    <td>Amount:</td>
                     <td><input type="text" name="Tamt" required/></td></tr>
 
             </table>
-                <button>Take</button>
+                        <button>Take</button>
             </form>
 
             <form method="Get" id="Tr">
             <table>
                 <tr>
-                    <td>Type of Transaction: </td>
+                    <td>Type of Transaction:</td>
                     <td><select name="Top" >
-                        <option value="in">Input</option>
+                        <option value="in"> Input</option>
                         <option value="out">Output</option>
                     </select></td></tr>
-
+                 <tr>
+                  <td>Sort by:</td>
+                    <td><select name="sort" >
+                           <option value="Date">Date</option>
+                           <option value="P_code"> Product code</option>
+                         </select></td></tr>
             </table>
-                <button>Display</button>
+                <button> Display </button>
             </form>
-            
-        
+
+          <form method="POST" id="newEmp" style="padding-left: 1%; padding-right: 1%;width:80%; margin-left:15%;">
+                <table >
+                <tr>
+                    <td>New Employee name: </td>
+                    <td><input type="text" name="Ename" required/></td></tr>
+                <tr>
+                      <td>Position:</td>
+                    <td><select name="pos">
+                        <option value="Admin">Admin</option>
+                        <option value="SK">Store Keeper</option>
+                    </select></td></tr>
+                <tr>
+                    <td>Language: </td>
+                    <td><select name="lang">
+                          <option value="A">ኣማርኛ</option>
+                          <option value="E">English</option>
+                    </select></td></tr>
+                <tr>
+                    <td>Password: </td>
+                    <td><input type="password" name="pword"></td></tr>
+                <tr><td colspan="2">After this the new Employee can sinup on his/her device</td></tr>
+            </table>
+                <button> Add</button>
+            </form>
+    
+<!--After this there are tables that a not displayed first but they will be displayed  -->
+<!--After this there are tables that a not displayed first but they will be displayed  -->
+<!--After this there are tables that a not displayed first but they will be displayed  -->
+<!--After this there are tables that a not displayed first but they will be displayed  -->
             
             <?php if($action==1):?>
             <table id="Result" style="display:block;">
                 <tr>
-                    <td>Product code:</td> 
+                    <td> 
+                        Product code:
+                               
+                    </td> 
                     <td><?php echo $_SESSION['item']['P_code'];?></td></tr>
                 <tr>
-                    <td>Name of item: </td>
+                    <td>
+                        Name of product:
+                       
+                </td>
                     <td><?php echo $_SESSION['item']['Name'];?></td></tr>
                 <tr>
-                    <td>Number of items: </td>
+                    <td>
+                       Number of product: 
+                      
+                    </td>
                     <td><?php echo $_SESSION['item']['No_items'];?></td></tr>
                 <tr>
-                    <td>Store: </td>
+                    <td>
+                        Store: 
+                       
+                    </td>
                     <td><?php echo $_SESSION['item']['S_id'];?></td></tr>
                 <tr>
-                    <td>placed at: </td>
+                    <td>
+                    Placed at: 
+                      
+                    </td>
                     <td><?php echo $_SESSION['item']['Location'];?></td></tr>
                 <tr>
-                    <td><div class="resOp"><a href="#" onclick="hide(6);" >Add</a></div></td>
-                    <td><div class="resOp"><a href="#" onclick="hide(7);" >Take</a></div></td>
+                    <td><a  href="#"  class="resOp" onclick="hide(6);">ADD</a></td>
+                    <td><a href="#" class="resOp" onclick="hide(7);" >
+                        Take 
+                       
+                            </a></td>
                     </table> 
           
         
             
 
             <?php elseif($action==2):?>
-                <p id="Result" style="display:block; padding-left: 10%; width:30%;">Found no item by that id!</p>
+                <p id="Result" style="display:block; padding-left: 10%; width:30%;">
+                         Found no product by that id!
+                          
+                 </p>
             <?php elseif($action==3):?>
-                <p id="Result" style="display:block; padding-left: 10%; width:30%;">There is no <?php echo $num;?> items!<br>
-                There is only<?php echo $amt+$num;?> items.</p><br>
+                <p id="Result" style="display:block; padding-left: 10%; width:30%;">
+                         There is no <?php echo $num;?> product!<br>
+                There is only<?php echo $amt+$num;?> items.
+                      
+            </p><br>
             <?php elseif($action==4):?>
-                <p id="Result" style="display:block; padding-left: 10%; width:30%;">Item Exist! as Item ID <?php echo $_SESSION['exist']['P_code'];?></p>
+                <p id="Result" style="display:block; padding-left: 10%; width:30%;">
+                           Product Exist! as product code 
+                         <?php echo $_SESSION['exist']['P_code'];?>
+                </p>
             <?php elseif($action==5):?>
-                <p id="Result" style="display:block;padding-left: 10%; width:30%;">The Amount can't be negative or Zero!</p>
-                
-            <?php endif;?>
+                <p id="Result" style="display:block;padding-left: 10%; width:30%;">The Amount can't be negative or Zero! </p>
+            <?php endif?>    
+            
 
            <div id="storeResult" style="display:flex;">
                <?php 
@@ -384,54 +427,87 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
                                           <?php if(!empty($_SESSION['items'])):?>
                                                <table >
                                                        <tr >
-                                                           <td>Product code:</td> 
+                                                           <td>  Product code:
+                                                                
+                                                           </td> 
                                                            <td><?php echo $_SESSION['items']['P_code'];?></td></tr>
                                                        <tr>
-                                                           <td>Name of item: </td>
+                                                           <td>
+                                                               Name of product:
+                                                              
+                                                         </td>
                                                            <td><?php echo $_SESSION['items']['Name'];?></td></tr>
                                                        <tr>
-                                                           <td>placed at: </td>
+                                                           <td>
+                                                           Store: 
+                                                            
+                                                        </td>
                                                            <td><?php echo $_SESSION['items']['Location'];?></td></tr>
-                                                        <tr><td><a href="?pc=<?php echo$_SESSION['items']['P_code'];?>">Details</a></td></tr>
+                                                        <tr><td><a href="?pc=<?php echo$_SESSION['items']['P_code'];?>">
+                                                                      Details
+                                                                       
+                                                                    </a></td></tr>
                                                    </table>
                                                       
                                             
-                                       <?php endif ?>
+                                       <?php endif?>
                                        <?php $_SESSION['items']=mysqli_fetch_assoc($result); ?>
                                        <?php if(!empty($_SESSION['items'])):?>
-                                               <table  >
+                                        <table >
                                                        <tr >
-                                                           <td>Product code:</td> 
+                                                           <td>  Product code:
+                                                                
+                                                           </td> 
                                                            <td><?php echo $_SESSION['items']['P_code'];?></td></tr>
                                                        <tr>
-                                                           <td>Name of item: </td>
+                                                           <td>
+                                                               Name of product:
+                                                              
+                                                         </td>
                                                            <td><?php echo $_SESSION['items']['Name'];?></td></tr>
                                                        <tr>
-                                                           <td>placed at: </td>
+                                                           <td>
+                                                           Store: 
+                                                            
+                                                        </td>
                                                            <td><?php echo $_SESSION['items']['Location'];?></td></tr>
-                                                            <tr><td><a href="?pc=<?php echo$_SESSION['items']['P_code'];?>">Details</a></td></tr>
+                                                        <tr><td><a href="?pc=<?php echo$_SESSION['items']['P_code'];?>">
+                                                                      Details
+                                                                       
+                                                                    </a></td></tr>
                                                    </table>
                                             
-                                       <?php endif ?>
+                                       <?php endif?>
                                        <?php $_SESSION['items']=mysqli_fetch_assoc($result); ?>
                                        <?php if(!empty($_SESSION['items'])):?>
-                                               <table  >
+                                        <table >
                                                        <tr >
-                                                           <td>Product code:</td> 
+                                                           <td>  Product code:
+                                                                
+                                                           </td> 
                                                            <td><?php echo $_SESSION['items']['P_code'];?></td></tr>
                                                        <tr>
-                                                           <td>Name: </td>
+                                                           <td>
+                                                               Name of product:
+                                                              
+                                                         </td>
                                                            <td><?php echo $_SESSION['items']['Name'];?></td></tr>
                                                        <tr>
-                                                           <td>placed at: </td>
+                                                           <td>
+                                                           Store: 
+                                                            
+                                                        </td>
                                                            <td><?php echo $_SESSION['items']['Location'];?></td></tr>
-                                                            <tr><td><a href="?pc=<?php echo$_SESSION['items']['P_code'];?>">Details</a></td></tr>
+                                                        <tr><td><a href="?pc=<?php echo$_SESSION['items']['P_code'];?>">
+                                                                      Details
+                                                                       
+                                                                    </a></td></tr>
                                                    </table>
                                             
-                                       <?php endif ?>
+                                       <?php endif?>
                                        <?php $_SESSION['items']=mysqli_fetch_assoc($result); ?><br>
                                        <?php endwhile?>
-                                       <?php endif ?>
+                                       <?php endif?>
            </div>
                                     
            
@@ -441,11 +517,12 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
                 if($_SERVER['REQUEST_METHOD']=='GET' && !empty($_GET['Top'])):?>
                
                   <?php  $tr=$_GET['Top'];
+                         $sort=$_GET['sort'];
                     if($tr=="in"){
-                         $query = "select * from T_in ";
+                         $query = "select * from T_in GROUP BY $sort";
                         }
                     elseif($tr=="out"){
-                        $query = "select * from T_out ";
+                        $query = "select * from T_out GROUP BY $sort";
                        }
 
                          $result=mysqli_query($con,$query);
@@ -453,11 +530,25 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
                                  $_SESSION['Tr']=mysqli_fetch_assoc($result);}?>
                                  <table border="2px solid black">
                                                        <tr>
-                                                           <td>T id</td>
-                                                           <td>Product code:</td>
-                                                           <td>Amount:</td>
-                                                            <td>Type:</td>
-                                                           <td>Date</td>
+                                                           <td>
+                                                                         T id
+                                                                       
+                                                            </td>
+                                                           <td> Product code
+                                                                
+                                                                </td>
+                                                           <td>
+                                                            Amount 
+                                                           
+                                                            </td>
+                                                            <td> 
+                                                                Type 
+                                                               
+                                                            </td>
+                                                           <td>
+                                                           Date 
+                                                          
+                                                           </td>
                                                         </tr>
                                                    </table>  
                                 <?php while(!empty($_SESSION['Tr'])): ?>
@@ -465,46 +556,62 @@ else if($_SERVER['REQUEST_METHOD']=='POST' ){
                                                <table border="2px solid black">
                                                        <tr>
                                                            <td><?php echo $_SESSION['Tr']['T_id'];?></td>
-                                                        <td><a href="?pc=<?php echo $_SESSION['Tr']['P_code'];?>"><?php echo $_SESSION['Tr']['P_code'];?> </a> </td>
+                                                        <td><a  id="menu"href="?pc=<?php echo $_SESSION['Tr']['P_code'];?>"><?php echo $_SESSION['Tr']['P_code'];?> </a> </td>
                                                            <td><?php echo $_SESSION['Tr']['Amount'];?></td>
                                                            <td> 
                                                            <?php 
                                                            if(!empty($_SESSION['Tr']['NorU']) && $_SESSION['Tr']['NorU']=='N'){
                                                            echo "New";}
+                                                           
                                                            else if(!empty($_SESSION['Tr']['NorU']) && $_SESSION['Tr']['NorU']=='U'){
                                                             echo "Update";}
                                                             else if(empty($_SESSION['Tr']['NorU'])){
-                                                                echo "Out";}
+                                                                echo "Out";}    
                                                            ?>
                                                                                  
                                                         </td>
                                                            <td><?php echo $_SESSION['Tr']['date'];?></td>
                                                         </tr>
                                                    </table>     
-                                       <?php endif ?>
+                                       <?php endif?>
                                        <?php $_SESSION['Tr']=mysqli_fetch_assoc($result);?>
                                                   
                                         <?php endwhile?>     
-                                       <?php endif ?>
+                                       <?php endif?>
              </div>
-                                        
-                                          
-                                       
-                                       
-                                       
-
 
         </td>
         </tr>
-            <tr><td id="menu"><a href="#" onclick="hide(1);" >Check Item</a></td></tr>
-            <tr><td id="menu"><a href="#" onclick="hide(2);">Add new Item</a></td></tr>
-            <tr><td id="menu"><a href="#" onclick="hide(3);">Add num of Items</a></td></tr>
-            <tr><td id="menu"><a href="#" onclick="hide(4);">Take Item</a></td></tr>
-            <tr><td id="menu"><a href="#" onclick="hide(5);">Store</a></td></tr>
+            <tr><td id="menu"><a href="#" onclick="hide(1);" >
+               Check Product
+              </a></td></tr>
+            
+                    <tr><td id="menu"><a href="#" onclick="hide(2);">
+            Add new Product
+              </a></td></tr>
+            
+            <tr><td id="menu"><a href="#" onclick="hide(3);">
+                 Add num of Product
+                     </a></td></tr>
+            
+            <tr><td id="menu"><a href="#" onclick="hide(4);">
+                 Take Product
+                   </a></td></tr>
+            
+            <tr><td id="menu"><a href="#" onclick="hide(5);">
+                 Store
+                   </a></td></tr>
             <?php if($_SESSION['Emp']['Position']=='Admin'):?>
-            <tr><td id="menu"><a href="#" onclick="hide(8);">Transaction</a></td></tr>
-            <?php endif;?>
-           
+            <tr><td id="menu"><a href="#" onclick="hide(8);">
+                  Transaction
+                  </a></td></tr>
+            <tr><td id="menu"><a href="#" onclick="hide(9);">
+                   Add new Employee
+                    </a></td></tr>
+                    <?php endif;?>
+            
+          
+
 
             </table>
             

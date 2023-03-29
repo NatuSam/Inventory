@@ -1,19 +1,22 @@
 <?php 
 require "connection.php";
+
 session_unset(); 
 $action=0;
 if($_SERVER['REQUEST_METHOD'] == "POST"){
-    $id= htmlspecialchars($_POST['id']);
+    //$id= htmlspecialchars($_POST['id']);
     $name= htmlspecialchars($_POST['name']);
     $pos=htmlspecialchars($_POST['pos']);
     $pword= htmlspecialchars($_POST['pword']);
     $query = "Select * from Employee where Name = '$name' AND password = '$pword' AND Position = '$pos'";
     $result = mysqli_query($con, $query);
     if(mysqli_num_rows($result)>0){
-            
         $_SESSION['Emp'] = mysqli_fetch_assoc($result);
-        header("location: index.php");
-        die;
+        if(!empty($_SESSION['re'])){
+            $x=$_SESSION['re'];
+            header("location: index.php?pc=$x");
+        }
+        else{header("location: index.php");}
     }
     else{
         $action=1;
@@ -24,13 +27,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 <html>
     <head>
         <title>Inventory</title>
-        <link rel="stylesheet" href="home.css">
-            <script>
-                function sinin(){
-                var name = window.prompt("Enter your Name");
-               var p = window.prompt("Enter your password");
-                }
-            </script>   
+        <link rel="stylesheet" href="home.css"> 
             <style>
                 #login{
     display: block;
@@ -54,9 +51,9 @@ font-size: larger;
             <?php require "header.php"?>
             <form   id="login" method="POST">
                 <table>
-                <tr>
+              <!--  <tr>
                     <td>Employee Id:</td> 
-                    <td><input type="text" name="id" placeholder="not required"/></td></tr>
+                    <td><input type="text" name="id" placeholder="not required"/></td></tr> -->
                 <tr>
                     <td>Employee Name:</td> 
                     <td><input type="text" name="name"required/></td></tr>
@@ -64,10 +61,10 @@ font-size: larger;
                     <td>Position:</td> 
                     <td><select name="pos">
                         <option value="Admin">Admin</option>
-                        <option value="SK">Store Keeper </option>
+                        <option value="SK">Store Keeper</option>
                     </select>
                         
-                    <!--<input type="text" name="name"required/>--></td></tr>
+                    </td></tr>
                 <tr>
                     <td>Password: </td>
                     <td><input type="password" name="pword" required/></td></tr>
