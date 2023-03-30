@@ -1,128 +1,36 @@
 <?php
+session_start();
 require "connection.php";
+require("check.php");
+require("newP.php");
+require("addN.php");
+require("take.php");
 $action=0;
 
 
-if($_SERVER['REQUEST_METHOD']=='GET' && !empty($_GET['pc']) ){
-$pc=$_GET['pc'];
-$query = "select * from item where P_code = '$pc' limit 1";
-$result=mysqli_query($con,$query);
-if(mysqli_num_rows($result)>0){
-$_SESSION['item']=mysqli_fetch_assoc($result);
-$action=1;
-}
-else{
-    $action=2;
-}
+if($_SERVER['REQUEST_METHOD']=='GET' && !empty($_GET['pc'])){
+$action = check($_GET['pc']);
+
 }
 
 else if($_SERVER['REQUEST_METHOD']=='POST' && !empty($_POST['newname'])){
-    $pcode=$_POST['Apcode'];
-    $name=$_POST['newname'];
-    $num=$_POST['no'];
-    $store=$_POST['store'];
-    $place=$_POST['loc'];
-
-    $query = "select * from item where Name = '$name' limit 1";
-    $result=mysqli_query($con,$query);
-    if(mysqli_num_rows($result)>0){
-        $action=4;
-        $_SESSION['exist']=mysqli_fetch_assoc($result);
-    }
-    else{
-    $query = "insert into item(P_code,Name, No_items, S_id,Location) VALUES ('$pcode','$name','$num','$store','$place')";
-    $result=mysqli_query($con,$query);
-
-    $query = "select * from item where Name = '$name' limit 1";
-    $result=mysqli_query($con,$query);
-    if(mysqli_num_rows($result)>0){
-     $_SESSION['item']=mysqli_fetch_assoc($result);
-     $date=date("Y-m-d H:i:s");
-     $newid= $_SESSION['item']['P_code'];
-    $query = " insert into T_in(P_code, NorU,Amount,date) VALUES ('$newid','N','$num','$date')";
-    $result=mysqli_query($con,$query);
-    $action=1;
-    }
-   }
+    $action =   newP($_POST['Apcode'],$_POST['newname'],$_POST['no'],$_POST['store'],$_POST['loc']);
 }
 else if($_SERVER['REQUEST_METHOD']=='POST' && (!empty($_POST['Anpcode'])||!empty($_POST['Addamt']))){
-    $amt="No";
     if(!empty($_POST['Anpcode'])){
-    $Anpcode=$_POST['Anpcode'];
-    $num=$_POST['amt'];
-   
-    $query = "select * from item where P_code = '$Anpcode' limit 1";
-    $result1=mysqli_query($con,$query);
-      if(mysqli_num_rows($result1)>0){
-      $_SESSION['item']=mysqli_fetch_assoc($result1);
-      $amt=$_SESSION['item']['No_items']+$num;
-      } 
-   }
-    else if(!empty($_POST['Addamt'])){
-    $Anpcode=$_SESSION['item']['P_code'];
-    $num=$_POST['Addamt'];
-    $amt=$_SESSION['item']['No_items']+$num;
+        $action = addN1($_POST['Anpcode'],$_POST['amt']);
     }
-
-    if(is_int($amt)&&$num>0){
-    $query = " update item set No_items ='$amt' WHERE P_code = '$Anpcode'";
-    $result=mysqli_query($con,$query);
-    $query = "select * from item where P_code = '$Anpcode' limit 1";
-    $result=mysqli_query($con,$query);
-    $_SESSION['item']=mysqli_fetch_assoc($result);
-
-    $date=date("Y-m-d H:i:s");
-    $query = " insert into T_in(P_code, NorU,Amount,date) VALUES ('$Anpcode','U','$num','$date')";
-    $result=mysqli_query($con,$query);
-    $action=1;
-    }
-    elseif($num<=0 &&is_int($amt)) {
-        $action=5;
-    }
-    else {
-       $action=2;
-    }
+     else if(!empty($_POST['Addamt'])){
+        $action = addN($_SESSION['item']['P_code'],$_POST['Addamt']);
+        
+     }
 }
 else if($_SERVER['REQUEST_METHOD']=='POST' && (!empty($_POST['Tpcode'])||!empty($_POST['Tamt']))){
-    $amt= "No";
     if(!empty($_POST['Tpcode'])){
-    $Tpcode=$_POST['Tpcode'];
-    $num=$_POST['amt'];
-   
-    $query = "select * from item where P_code = '$Tpcode' limit 1";
-    $result=mysqli_query($con,$query);
-    if(mysqli_num_rows($result)>0){
-      $_SESSION['item']=mysqli_fetch_assoc($result);
-
-    $amt=$_SESSION['item']['No_items']-$num;
+        $action=take1($_POST['Tpcode'],$_POST['amt']);
     }
-    }
-    else if(!empty($_POST['Tamt'])&& $_POST['Tamt']>0){
-        $Tpcode=$_SESSION['item']['P_code'];
-        $num=$_POST['Tamt'];
-        $amt=$_SESSION['item']['No_items']-$num;
-    }
-
-    if(is_int($amt)&&$num>0 &&$amt>=0){
-    $query = " update item set No_items ='$amt' WHERE P_code = '$Tpcode'";
-    $result=mysqli_query($con,$query);
-    $query = "select * from item where P_code = '$Tpcode' limit 1";
-    $result=mysqli_query($con,$query);
-    $_SESSION['item']=mysqli_fetch_assoc($result);
-
-    $date=date("Y-m-d H:i:s");
-    $query = " insert into T_out(P_code,Amount,date) VALUES ('$Tpcode','$num','$date')";
-    $result=mysqli_query($con,$query);
-    $action=1;
-    }
-    else if(is_int($amt)&&$amt<0){
-        $action=3;
-    }
-    else if(is_int($amt)&&$num<=0){
-        $action=5   ;
-    }
-    else {
-       $action=2;
+    else if(!empty($_POST['Tamt'])){
+        $action=take($_SESSION['item']['P_code'],$_POST['Tamt']);
     }
 }
 else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
@@ -204,10 +112,11 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
     </head>
     <body>
       <?php require "header.php";?>
-      <?php if(empty($_SESSION['Emp'])){
+      <?php if(empty($_SESSION['Emp']['Name'])){
         $_SESSION['re']=$_GET['pc'];
         header("Location: login.php"); 
-      } ?>
+      } 
+      ?>
       
             
         <table id="main">
@@ -252,7 +161,7 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
                     <td><input type="text" name="amt" required/></td></tr>
 
             </table>
-                <button>Add:</button>
+                <button>Add</button>
             </form>
 
             <form method="POST" id="Take">
@@ -354,41 +263,23 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
             <?php if($action==1):?>
             <table id="Result" style="display:block;">
                 <tr>
-                    <td> 
-                        Product code:
-                               
-                    </td> 
+                    <td>Product code:</td> 
                     <td><?php echo $_SESSION['item']['P_code'];?></td></tr>
                 <tr>
-                    <td>
-                        Name of product:
-                       
-                </td>
+                    <td>Name of product:</td>
                     <td><?php echo $_SESSION['item']['Name'];?></td></tr>
                 <tr>
-                    <td>
-                       Number of product: 
-                      
-                    </td>
+                    <td>Number of product: </td>
                     <td><?php echo $_SESSION['item']['No_items'];?></td></tr>
                 <tr>
-                    <td>
-                        Store: 
-                       
-                    </td>
+                    <td>Store: </td>
                     <td><?php echo $_SESSION['item']['S_id'];?></td></tr>
                 <tr>
-                    <td>
-                    Placed at: 
-                      
-                    </td>
+                    <td> Placed at:</td>
                     <td><?php echo $_SESSION['item']['Location'];?></td></tr>
                 <tr>
                     <td><a  href="#"  class="resOp" onclick="hide(6);">ADD</a></td>
-                    <td><a href="#" class="resOp" onclick="hide(7);" >
-                        Take 
-                       
-                            </a></td>
+                    <td><a href="#" class="resOp" onclick="hide(7);" >Take</a></td>
                     </table> 
           
         
@@ -396,20 +287,15 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
 
             <?php elseif($action==2):?>
                 <p id="Result" style="display:block; padding-left: 10%; width:30%;">
-                         Found no product by that id!
-                          
-                 </p>
+                         Found no product by that id! </p>
             <?php elseif($action==3):?>
                 <p id="Result" style="display:block; padding-left: 10%; width:30%;">
                          There is no <?php echo $num;?> product!<br>
-                There is only<?php echo $amt+$num;?> items.
-                      
-            </p><br>
+                There is only<?php echo $amt+$num;?> items.</p><br>
             <?php elseif($action==4):?>
                 <p id="Result" style="display:block; padding-left: 10%; width:30%;">
                            Product Exist! as product code 
-                         <?php echo $_SESSION['exist']['P_code'];?>
-                </p>
+                         <?php echo $_SESSION['exist']['P_code'];?> </p>
             <?php elseif($action==5):?>
                 <p id="Result" style="display:block;padding-left: 10%; width:30%;">The Amount can't be negative or Zero! </p>
             <?php endif?>    
@@ -427,26 +313,17 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
                                           <?php if(!empty($_SESSION['items'])):?>
                                                <table >
                                                        <tr >
-                                                           <td>  Product code:
-                                                                
-                                                           </td> 
+                                                           <td>Product code:</td> 
                                                            <td><?php echo $_SESSION['items']['P_code'];?></td></tr>
                                                        <tr>
                                                            <td>
-                                                               Name of product:
-                                                              
-                                                         </td>
+                                                               Name of product:</td>
                                                            <td><?php echo $_SESSION['items']['Name'];?></td></tr>
                                                        <tr>
-                                                           <td>
-                                                           Store: 
-                                                            
-                                                        </td>
+                                                           <td>Store:</td>
                                                            <td><?php echo $_SESSION['items']['Location'];?></td></tr>
                                                         <tr><td><a href="?pc=<?php echo$_SESSION['items']['P_code'];?>">
-                                                                      Details
-                                                                       
-                                                                    </a></td></tr>
+                                                                      Details </a></td></tr>
                                                    </table>
                                                       
                                             
@@ -455,26 +332,16 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
                                        <?php if(!empty($_SESSION['items'])):?>
                                         <table >
                                                        <tr >
-                                                           <td>  Product code:
-                                                                
-                                                           </td> 
+                                                           <td>  Product code:</td> 
                                                            <td><?php echo $_SESSION['items']['P_code'];?></td></tr>
                                                        <tr>
-                                                           <td>
-                                                               Name of product:
-                                                              
-                                                         </td>
+                                                           <td>Name of product:</td>
                                                            <td><?php echo $_SESSION['items']['Name'];?></td></tr>
                                                        <tr>
-                                                           <td>
-                                                           Store: 
-                                                            
-                                                        </td>
+                                                           <td>Store:</td>
                                                            <td><?php echo $_SESSION['items']['Location'];?></td></tr>
                                                         <tr><td><a href="?pc=<?php echo$_SESSION['items']['P_code'];?>">
-                                                                      Details
-                                                                       
-                                                                    </a></td></tr>
+                                                                      Details</a></td></tr>
                                                    </table>
                                             
                                        <?php endif?>
@@ -482,26 +349,16 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
                                        <?php if(!empty($_SESSION['items'])):?>
                                         <table >
                                                        <tr >
-                                                           <td>  Product code:
-                                                                
-                                                           </td> 
+                                                           <td>Product code: </td> 
                                                            <td><?php echo $_SESSION['items']['P_code'];?></td></tr>
                                                        <tr>
-                                                           <td>
-                                                               Name of product:
-                                                              
-                                                         </td>
+                                                           <td>Name of product:</td>
                                                            <td><?php echo $_SESSION['items']['Name'];?></td></tr>
                                                        <tr>
-                                                           <td>
-                                                           Store: 
-                                                            
-                                                        </td>
+                                                           <td>Store:</td>
                                                            <td><?php echo $_SESSION['items']['Location'];?></td></tr>
                                                         <tr><td><a href="?pc=<?php echo$_SESSION['items']['P_code'];?>">
-                                                                      Details
-                                                                       
-                                                                    </a></td></tr>
+                                                                      Details </a></td></tr>
                                                    </table>
                                             
                                        <?php endif?>
@@ -530,25 +387,11 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
                                  $_SESSION['Tr']=mysqli_fetch_assoc($result);}?>
                                  <table border="2px solid black">
                                                        <tr>
-                                                           <td>
-                                                                         T id
-                                                                       
-                                                            </td>
-                                                           <td> Product code
-                                                                
-                                                                </td>
-                                                           <td>
-                                                            Amount 
-                                                           
-                                                            </td>
-                                                            <td> 
-                                                                Type 
-                                                               
-                                                            </td>
-                                                           <td>
-                                                           Date 
-                                                          
-                                                           </td>
+                                                           <td>T id</td>
+                                                           <td> Product code</td>
+                                                           <td>Amount</td>
+                                                            <td>Type</td>
+                                                           <td> Date</td>
                                                         </tr>
                                                    </table>  
                                 <?php while(!empty($_SESSION['Tr'])): ?>
@@ -583,31 +426,20 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
         </td>
         </tr>
             <tr><td id="menu"><a href="#" onclick="hide(1);" >
-               Check Product
-              </a></td></tr>
-            
+               Check Product</a></td></tr>
                     <tr><td id="menu"><a href="#" onclick="hide(2);">
-            Add new Product
-              </a></td></tr>
-            
+            Add new Product</a></td></tr>           
             <tr><td id="menu"><a href="#" onclick="hide(3);">
-                 Add num of Product
-                     </a></td></tr>
-            
+                 Add num of Product</a></td></tr>
             <tr><td id="menu"><a href="#" onclick="hide(4);">
-                 Take Product
-                   </a></td></tr>
-            
+                 Take Product</a></td></tr>
             <tr><td id="menu"><a href="#" onclick="hide(5);">
-                 Store
-                   </a></td></tr>
+                 Store</a></td></tr>
             <?php if($_SESSION['Emp']['Position']=='Admin'):?>
             <tr><td id="menu"><a href="#" onclick="hide(8);">
-                  Transaction
-                  </a></td></tr>
+                  Transaction</a></td></tr>
             <tr><td id="menu"><a href="#" onclick="hide(9);">
-                   Add new Employee
-                    </a></td></tr>
+                   Add new Employee</a></td></tr>
                     <?php endif;?>
             
           

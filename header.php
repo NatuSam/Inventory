@@ -1,4 +1,3 @@
-
 <html>
     <head>
         <title>Inventory</title>
@@ -17,8 +16,8 @@
         <a href="login.php">Logout</a>       
     <?php else:?>
         <a href="index.php">Home</a>
-        <a href="login.php">Login</a>;
-    <?php endif;?>
+        <a href="login.php">Login</a>
+    <?php endif?>
             </div>
 
             

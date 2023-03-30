@@ -1,7 +1,10 @@
 <?php 
 require "connection.php";
+session_start();
+$_SESSION['Emp']=array();
 
-session_unset(); 
+//printf($_SESSION['Emp']['Name']); 
+
 $action=0;
 if($_SERVER['REQUEST_METHOD'] == "POST"){
     //$id= htmlspecialchars($_POST['id']);
