@@ -5,7 +5,9 @@ require("check.php");
 require("newP.php");
 require("addN.php");
 require("take.php");
+require("low.php");
 $action=0;
+$low = low();
 
 
 if($_SERVER['REQUEST_METHOD']=='GET' && !empty($_GET['pc'])){
@@ -105,6 +107,19 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
                   
             }
         </script>
+        <script src="qrcode.js">
+        function QR(url){
+            var qrDisplay =document.getElementById("qrcode");
+            var qrcode = new qrcode(qrDisplay,{
+                text:url,
+                Width:256,
+                height:256,
+                coorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+}</script>
         <link rel="stylesheet" href="home.css">
         <link rel="stylesheet" href="st.css">
         
@@ -117,6 +132,14 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
         header("Location: login.php"); 
       } 
       ?>
+      <div id="google_translate_element"></div>
+ <script type="text/javascript"> 
+   function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+  }
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
       
             
         <table id="main">
@@ -280,6 +303,7 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
                 <tr>
                     <td><a  href="#"  class="resOp" onclick="hide(6);">ADD</a></td>
                     <td><a href="#" class="resOp" onclick="hide(7);" >Take</a></td>
+                    <td> <a href="#" onclick="QR('localhost/index.php?pc=1');">Print</a></td>
                     </table> 
           
         
@@ -298,7 +322,10 @@ else if($_SERVER['REQUEST_METHOD']=='POST'&& $_POST['Ename']){
                          <?php echo $_SESSION['exist']['P_code'];?> </p>
             <?php elseif($action==5):?>
                 <p id="Result" style="display:block;padding-left: 10%; width:30%;">The Amount can't be negative or Zero! </p>
-            <?php endif?>    
+                <?php elseif($low==6):?>
+                <p id="Result" style="display:block;padding-left: 10%; width:30%;">There is low item in the stock! </p>
+            
+                <?php endif?>    
             
 
            <div id="storeResult" style="display:flex;">
