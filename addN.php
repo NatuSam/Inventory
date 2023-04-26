@@ -14,12 +14,11 @@ function addN($Anpcode,$num){
     $date=date("Y-m-d H:i:s");
     $query = " insert into T_in(P_code, NorU,Amount,date) VALUES ('$Anpcode','U','$num','$date')";
     $result=mysqli_query($con,$query);
-    $action=1;
+    result();
     }
     elseif($num<=0) {
-        $action=5;
+      negativeAmt();
     }
-    return $action;
 }
 
 function addN1($Anpcode,$num){
