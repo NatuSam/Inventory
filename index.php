@@ -1,18 +1,13 @@
 <?php
 session_start();
+require("nav.php");
 require "connection.php";
-require "connection.php";
-require("check.php");
-require("newP.php");
-require("addN.php");
-require("take.php");
+require("takeAndCheck.php");
 require("result.php");
-require("low.php");
-require("order.php");
-
-
-low();
- 
+require("newAndAdd.php");
+require("orderAndLow.php");
+require("storeAndTransaction.php");
+low(); 
 ?>
 
 <html>
@@ -253,7 +248,7 @@ function QRCode() {
                     <table>
                         <tr>
                             <td>Type of Transaction:</td>
-                            <td><select name="Top">
+                            <td><select name="Tot">
                                     <option value="in"> Input</option>
                                     <option value="out">Output</option>
                                 </select></td>
@@ -308,151 +303,15 @@ function QRCode() {
                 
 
 
+               
+                
+                <?php require("nav.php");?>
                 <?php if(array_key_exists('refresh', $_POST)){
                            ordercheck();}?>
                <form method="post">
                 <button name="refresh">Refresh</button></form>
-                
-                <?php require("nav.php");?>
-                <div id="storeResult" style="display:flex;">
-                    <?php
-               if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET['st'])): ?>
-                    <?php $st = $_GET['st'];
-                      $query = "select * from item where S_id = '$st'";
-                      $result = mysqli_query($con, $query);
-                      if (mysqli_num_rows($result) > 0) {
-                          $_SESSION['items'] = mysqli_fetch_assoc($result);
-                      } ?>
-                    <?php while (!empty($_SESSION['items'])): ?>
-                    <?php if (!empty($_SESSION['items'])): ?>
-                    <table>
-                        <tr>
-                            <td>Product code:</td>
-                            <td><?php echo $_SESSION['items']['P_code']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Name of product:</td>
-                            <td><?php echo $_SESSION['items']['Name']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Store:</td>
-                            <td><?php echo $_SESSION['items']['Location']; ?></td>
-                        </tr>
-                        <tr>
-                            <td><a href="?pc=<?php echo $_SESSION['items']['P_code']; ?>">
-                                    Details </a></td>
-                        </tr>
-                    </table>
-
-
-                    <?php endif ?>
-                    <?php $_SESSION['items'] = mysqli_fetch_assoc($result); ?>
-                    <?php if (!empty($_SESSION['items'])): ?>
-                    <table>
-                        <tr>
-                            <td> Product code:</td>
-                            <td><?php echo $_SESSION['items']['P_code']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Name of product:</td>
-                            <td><?php echo $_SESSION['items']['Name']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Store:</td>
-                            <td><?php echo $_SESSION['items']['Location']; ?></td>
-                        </tr>
-                        <tr>
-                            <td><a href="?pc=<?php echo $_SESSION['items']['P_code']; ?>">
-                                    Details</a></td>
-                        </tr>
-                    </table>
-
-                    <?php endif ?>
-                    <?php $_SESSION['items'] = mysqli_fetch_assoc($result); ?>
-                    <?php if (!empty($_SESSION['items'])): ?>
-                    <table>
-                        <tr>
-                            <td>Product code: </td>
-                            <td><?php echo $_SESSION['items']['P_code']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Name of product:</td>
-                            <td><?php echo $_SESSION['items']['Name']; ?></td>
-                        </tr>
-                        <tr>
-                            <td>Store:</td>
-                            <td><?php echo $_SESSION['items']['Location']; ?></td>
-                        </tr>
-                        <tr>
-                            <td><a href="?pc=<?php echo $_SESSION['items']['P_code']; ?>">
-                                    Details </a></td>
-                        </tr>
-                    </table>
-
-                    <?php endif ?>
-                    <?php $_SESSION['items'] = mysqli_fetch_assoc($result); ?><br>
-                    <?php endwhile ?>
-                    <?php endif ?>
-                </div>
-
-
-                <div id="Tresult" style="display:block;">
-
-                    <?php
-               if ($_SERVER['REQUEST_METHOD'] == 'GET' && !empty($_GET['Top'])): ?>
-
-                    <?php $tr = $_GET['Top'];
-                      $sort = $_GET['sort'];
-                      if ($tr == "in") {
-                          $query = "select * from T_in GROUP BY $sort";
-                      } elseif ($tr == "out") {
-                          $query = "select * from T_out GROUP BY $sort";
-                      }
-
-                      $result = mysqli_query($con, $query);
-                      if (mysqli_num_rows($result) > 0) {
-                          $_SESSION['Tr'] = mysqli_fetch_assoc($result);
-                      } ?>
-                    <table border="2px solid black">
-                        <tr>
-                            <td>T id</td>
-                            <td> Product code</td>
-                            <td>Amount</td>
-                            <td>Type</td>
-                            <td> Date</td>
-                        </tr>
-                    </table>
-                    <?php while (!empty($_SESSION['Tr'])): ?>
-                    <?php if (!empty($_SESSION['Tr'])): ?>
-                    <table border="2px solid black">
-                        <tr>
-                            <td><?php echo $_SESSION['Tr']['T_id']; ?></td>
-                            <td><a id="menu"
-                                    href="?pc=<?php echo $_SESSION['Tr']['P_code']; ?>"><?php echo $_SESSION['Tr']['P_code']; ?>
-                                </a> </td>
-                            <td><?php echo $_SESSION['Tr']['Amount']; ?></td>
-                            <td>
-                                <?php
-                                 if (!empty($_SESSION['Tr']['NorU']) && $_SESSION['Tr']['NorU'] == 'N') {
-                                     echo "New";
-                                 } else if (!empty($_SESSION['Tr']['NorU']) && $_SESSION['Tr']['NorU'] == 'U') {
-                                     echo "Update";
-                                 } else if (empty($_SESSION['Tr']['NorU'])) {
-                                     echo "Out";
-                                 }
-                                 ?>
-
-                            </td>
-                            <td><?php echo $_SESSION['Tr']['date']; ?></td>
-                        </tr>
-                    </table>
-                    <?php endif ?>
-                    <?php $_SESSION['Tr'] = mysqli_fetch_assoc($result); ?>
-
-                    <?php endwhile ?>
-                    <?php endif ?>
-                </div>
+               
+                     
 
             </td>
         </tr>

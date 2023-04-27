@@ -1,7 +1,8 @@
 <?php 
-function ordercheck(){
 require("connection.php");
-$query = "select * from t_out where orders = 'store'";
+function ordercheck(){
+global $con;
+$query = "select * from t_out where orders = 'store' limit 1";
 $result = mysqli_query($con,$query);
 if(mysqli_num_rows($result)>0){
     $_SESSION['order'] = mysqli_fetch_assoc($result);
@@ -28,7 +29,7 @@ $_SESSION['order'] = mysqli_fetch_assoc($result);}
 }
 
 function orderdone($orderid){
-require("connection.php");
+global $con;
 $query = "select * from t_out where T_id = '$orderid' limit 1";
 $result = mysqli_query($con,$query);
 if(mysqli_num_rows($result)>0){
@@ -46,6 +47,15 @@ if(mysqli_num_rows($result)>0){
     $query = "select * from item where P_code = '$Tpcode' limit 1";
     $result=mysqli_query($con,$query);
     $_SESSION['item']=mysqli_fetch_assoc($result);
+    result();
 }
+}
+function low(){
+    global $con;
+    $query  = "select * from item where No_items < 10";
+    $result = mysqli_query($con,$query);
+    if(mysqli_num_rows($result)>0){
+        Lowstock();
+    }
 }
 ?>
