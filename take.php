@@ -4,16 +4,16 @@ function take( $Tpcode,$num){
 global $con;
 $amt=$_SESSION['item']['No_items']-$num;
 if($num>0 &&$amt>=0){
-$query = " update item set No_items ='$amt' WHERE P_code = '$Tpcode'";
+/*$query = " update item set No_items ='$amt' WHERE P_code = '$Tpcode'";
 $result=mysqli_query($con,$query);
 $query = "select * from item where P_code = '$Tpcode' limit 1";
 $result=mysqli_query($con,$query);
-$_SESSION['item']=mysqli_fetch_assoc($result);
+$_SESSION['item']=mysqli_fetch_assoc($result);  */
 
 $date=date("Y-m-d H:i:s");
-$query = " insert into T_out(P_code,Amount,date) VALUES ('$Tpcode','$num','$date')";
+$query = " insert into T_out(P_code,Amount,date,orders) VALUES ('$Tpcode','$num','$date','store')";
 $result=mysqli_query($con,$query);
- result();
+ //result();
 }
 else if($amt<0){
     noProductAmt($num,$amt);

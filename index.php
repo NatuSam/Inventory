@@ -1,16 +1,18 @@
 <?php
 session_start();
 require "connection.php";
+require "connection.php";
 require("check.php");
 require("newP.php");
 require("addN.php");
 require("take.php");
-require("low.php");
 require("result.php");
+require("low.php");
+require("order.php");
 
-$action = 0;
-$low = low();
 
+low();
+ 
 ?>
 
 <html>
@@ -73,9 +75,16 @@ $low = low();
         }
         document.getElementById('storeResult').style.display = 'none';
         document.getElementById('Tresult').style.display = 'none';
-
+      
+        
     }
-   </script>
+    </script>
+   <!--
+     <script>
+      var check = "</?php echo $_SESSION['Emp']['Name']; ?>";
+      console.log(check);
+     </script>
+   -->
 
 <script type="text/javascript">
 
@@ -92,6 +101,7 @@ function QRCode() {
 });
 }
 </script>
+
     
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="st.css">
@@ -114,10 +124,24 @@ function QRCode() {
         }, 'google_translate_element');
     }
     </script>
+    <style>
+        #order{
+    margin-left: 25%;
+    margin-bottom: 5%;
+    width: fit-content;
+    font-size: larger;
+    padding: 40px;
+    padding-bottom: 10px;
+    border: 2px solid rgb(00, 80, 80);  
+    width: 400px;
+    height: 70%;
+}
+    </style>
 
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
     </script>
 <div id="qrcode"></div>
+
     <table id="main">
         <tr>
             <td></td>
@@ -284,9 +308,11 @@ function QRCode() {
                 
 
 
-
+                <?php if(array_key_exists('refresh', $_POST)){
+                           ordercheck();}?>
+               <form method="post">
+                <button name="refresh">Refresh</button></form>
                 
-
                 <?php require("nav.php");?>
                 <div id="storeResult" style="display:flex;">
                     <?php
@@ -460,11 +486,10 @@ function QRCode() {
                     Add new Employee</a></td>
         </tr>
         <?php endif; ?>
-
-
-
-
     </table>
+    
+       
+    
 
 
 </body>

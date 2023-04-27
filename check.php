@@ -1,5 +1,6 @@
 <?php 
 require("connection.php");
+
 function check($pc){
 global $con;
 $query = "select * from item where P_code = '$pc' limit 1";

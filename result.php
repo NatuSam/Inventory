@@ -1,6 +1,7 @@
 <?php 
 
 function result(){
+session_start();
 echo("
     <table id=\"Result\" style=\"display:block;\">
         <tr>
