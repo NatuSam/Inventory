@@ -1,7 +1,7 @@
 <?php 
 
 function result(){
-session_start();
+
 echo("
     <table id=\"Result\" style=\"display:block;\">
         <tr>
@@ -25,9 +25,10 @@ echo("
             <td>".$_SESSION['item']['Location']."</td>
         </tr>
         <tr>
-            <td><a href=\"#\" class=\"resOp\" onclick=\"hide(6);\">ADD</a></td>
-            <td><a href=\"#\" class=\"resOp\" onclick=\"hide(7);\">Take</a></td>
-            <td> <a href=\"#\" onclick=\"QRCode();\">Print</a></td>
+            <td><button onclick=\"hide(6);\">ADD</button>
+                <button onclick=\"hide(7);\">Take</button>
+                <button id=\"print\"
+                onclick=\"downloadQRCode();\";>Print</button></td>
     </table>
 "
 ); }

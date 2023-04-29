@@ -28,6 +28,7 @@ $date=date("Y-m-d H:i:s");
 $query = " insert into T_out(P_code,Amount,date,orders) VALUES ('$Tpcode','$num','$date','store')";
 $result=mysqli_query($con,$query);
  //result();
+ 
 }
 else if($amt<0){
     noProductAmt($num,$amt);
@@ -45,14 +46,14 @@ if(mysqli_num_rows($result)>0&&$num>0){
   $_SESSION['item']=mysqli_fetch_assoc($result);
   $amt = $_SESSION['item']['No_items']-$num;
   if($amt>=0){
-  take($_SESSION['item']['P_code'],$num);
+   take($_SESSION['item']['P_code'],$num);
   }
   else{
      noProductAmt($num,$amt);
   }
 }
 else if(!mysqli_num_rows($result)>0){
-    noProduct();
+   noProduct();
 }
 else if($num<0){
     negativeAmt();

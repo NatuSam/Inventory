@@ -26,15 +26,13 @@ function addN1($Anpcode,$num){
     $query = "select * from item where P_code = '$Anpcode' limit 1";
     $result1=mysqli_query($con,$query);
       if(mysqli_num_rows($result1)>0){
-      $_SESSION['item']=mysqli_fetch_assoc($result1);
-      if($num>=0){
-      $action = addN($_SESSION['item']['P_code'],$num);
-      }
+        $_SESSION['item']=mysqli_fetch_assoc($result1);
+        addN($_SESSION['item']['P_code'],$num);
       }
       else {
-        $action = 2;
+        noProduct();
       }
-      return $action;
+      
       
 }
 

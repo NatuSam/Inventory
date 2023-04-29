@@ -2,13 +2,14 @@
 require("connection.php");
 function ordercheck(){
 global $con;
-$query = "select * from t_out where orders = 'store' limit 1";
+$query = "select * from t_out where orders = 'store'";
 $result = mysqli_query($con,$query);
 if(mysqli_num_rows($result)>0){
     $_SESSION['order'] = mysqli_fetch_assoc($result);
+    echo("<div>");
    while (!empty($_SESSION['order'])){
        if (!empty($_SESSION['order'])){
-         echo("<table id=\"order\">
+         echo("<table id=\"order\" style=\"display:block; color: white; border:2px solid red;\">
         <tr>
             <td>Product code:</td>
             <td>".$_SESSION['order']['P_code']."</td>
@@ -19,11 +20,13 @@ if(mysqli_num_rows($result)>0){
             <td>".$_SESSION['order']['Amount']."</td>
         </tr>
         <tr>
-            <td> <form method='POST'><button name=\"done\" value=".$_SESSION['order']['T_id']."\">Done </button></form></td>
+            <td> <form method='POST' style=\"display:block\"><button name=\"done\" value=".$_SESSION['order']['T_id']."\">Done </button></form></td>
         </tr>
-    </table>");
+    </table><br>");
 }
-$_SESSION['order'] = mysqli_fetch_assoc($result);}
+$_SESSION['order'] = mysqli_fetch_assoc($result);
+}
+echo("</div>");
 }
 
 }
@@ -47,9 +50,11 @@ if(mysqli_num_rows($result)>0){
     $query = "select * from item where P_code = '$Tpcode' limit 1";
     $result=mysqli_query($con,$query);
     $_SESSION['item']=mysqli_fetch_assoc($result);
+    
     result();
 }
 }
+//require("result.php");
 function low(){
     global $con;
     $query  = "select * from item where No_items < 10";
