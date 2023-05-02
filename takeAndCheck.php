@@ -7,7 +7,7 @@ function check($pc){
     $result=mysqli_query($con,$query);
     if(mysqli_num_rows($result)>0){
     $_SESSION['item']=mysqli_fetch_assoc($result);
-    result();
+    result("check");
     }
     else{
         noProduct();
@@ -27,7 +27,8 @@ $_SESSION['item']=mysqli_fetch_assoc($result);  */
 $date=date("Y-m-d H:i:s");
 $query = " insert into T_out(P_code,Amount,date,orders) VALUES ('$Tpcode','$num','$date','store')";
 $result=mysqli_query($con,$query);
- //result();
+$_SESSION['item']['No_items']=$amt;
+result("take");
  
 }
 else if($amt<0){

@@ -2,7 +2,7 @@
 require("connection.php");
 function ordercheck(){
 global $con;
-$query = "select * from t_out where orders = 'store'";
+$query = "select * from t_out where orders = 'store' limit 6";
 $result = mysqli_query($con,$query);
 if(mysqli_num_rows($result)>0){
     $_SESSION['order'] = mysqli_fetch_assoc($result);
@@ -51,7 +51,7 @@ if(mysqli_num_rows($result)>0){
     $result=mysqli_query($con,$query);
     $_SESSION['item']=mysqli_fetch_assoc($result);
     
-    result();
+    result("order");
 }
 }
 //require("result.php");

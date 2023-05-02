@@ -3,6 +3,7 @@ require("takeAndCheck.php");
 require("storeAndTransaction.php");
 require("result.php");
 require("newAndAdd.php");
+require("employee.php");
 
 /*if (empty($_SESSION['Emp']['Name'])) {
         $_SESSION['re'] = $_POST['pc'];
@@ -39,15 +40,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' ){
             take($_SESSION['item']['P_code'], $_POST['Tamt']);
         }
     } else if (!empty($_POST['Ename'])) {
-        $Ename = $_POST['Ename'];
-        $pos = $_POST['pos'];
-        $lang = $_POST['lang'];
-        $pass = $_POST['pword'];
-        $query = "insert into employee(Name,Position,Language,Password) VALUES ('$Ename','$pos','$lang','$pass')";
-        $result = mysqli_query($con, $query);
+        newEmp($_POST['Ename'],$_POST['pos'],$_POST['pword']);
+    } else if (!empty($_POST['FpEname'])) {
+            pReset($_POST['FpEname'],$_POST['FpEpword'],$_POST['Aname'],$_POST['Apword']);
+         
     } else if(!empty($_POST['done'])){
             orderdone($_POST['done']);
         $_POST['done'] = null;
-    }
+    }else if (!empty($_POST['NstId'])) {
+        newStore($_POST['NstId'],$_POST['NstName'],$_POST['NstDis']);
+     }
 }   
 ?>

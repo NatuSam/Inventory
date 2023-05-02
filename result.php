@@ -1,6 +1,6 @@
 <?php 
 
-function result(){
+function result($btt){
 
 echo("
     <table id=\"Result\" style=\"display:block;\">
@@ -23,15 +23,18 @@ echo("
         <tr>
             <td> Placed at:</td>
             <td>".$_SESSION['item']['Location']."</td>
-        </tr>
+        </tr>");
+    if($btt=="check"){
+    echo("
         <tr>
             <td><button onclick=\"hide(6);\">ADD</button>
                 <button onclick=\"hide(7);\">Take</button>
                 <button id=\"print\"
                 onclick=\"downloadQRCode();\";>Print</button></td>
-    </table>
-"
-); }
+        <tr>");}
+    
+    echo("</table>");
+}
 
 function noProduct(){
                echo(" <p id=\"Result\" style=\"display:block; padding-left: 10%; width:30%;\">
@@ -39,18 +42,30 @@ function noProduct(){
                     ");}
 function noProductAmt($num,$amt){
                 echo("  <p id=\"Result\" style=\"display:block; padding-left: 10%; width:30%;\">
-                    There is no".$num." product!<br>
+                    There is no ".$num." product!<br>
                     There is only ".$amt + $num." items.</p><br>
                     ");}
-function existProduct(){
+function existProduct($ch){
+    if($ch=="Name")
                 echo("<p id=\"Result\" style=\"display:block; padding-left: 10%; width:30%;\">
                     Product Exist! as product code ".
-                    $_SESSION['exist']['P_code']." </p>");}
+                    $_SESSION['exist']['P_code']." </p>");
+    else{
+        echo("<p id=\"Result\" style=\"display:block; padding-left: 10%; width:30%;\">
+        Product Exist! as product Name ".
+        $_SESSION['exist']['Name']." </p>"); 
+    }}
 function negativeAmt(){
                 echo("<p id=\"Result\" style=\"display:block;padding-left: 10%; width:30%;\">
                     The Amount can't be negative or Zero!</p>)");}
 function Lowstock(){
                 echo("<p id=\"Result\" style=\"display:block;padding-left: 10%; width:30%;\">
                 There is low item in the stock! </p>");}
+function existStore(){
+                echo("<p id=\"Result\" style=\"display:block;padding-left: 10%; width:30%;\">
+                Store exists! </p>");}
+function noStore(){
+                echo("<p id=\"Result\" style=\"display:block;padding-left: 10%; width:30%;\">
+                Found no Store By that id! </p>");}
 
 ?>

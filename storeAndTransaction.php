@@ -2,6 +2,18 @@
 require("connection.php");
 function store($st){
 global $con;   
+$query = "select * from store where S_id = '$st'";
+$result = mysqli_query($con, $query);
+if(mysqli_num_rows($result)>0){
+ $_SESSION['store'] = mysqli_fetch_assoc($result); 
+    echo("<div id=\"storeResultdis\" style=\"display:flex;\">
+            <ul>
+                 <li>Store ID:".$_SESSION['store']['S_id']."</li>
+                 <li>Store Name:".$_SESSION['store']['Name']."</li>
+                 <li>".$_SESSION['store']['Disc']."</li>
+            </ul>
+    </div>");
+
 $query = "select * from item where S_id = '$st'";
 $result = mysqli_query($con, $query);
 if (mysqli_num_rows($result) > 0) {
@@ -24,7 +36,7 @@ if (mysqli_num_rows($result) > 0) {
                     <td>".$_SESSION['items']['Location']."</td>
                 </tr>
                 <tr>
-                    <td><a href=\"?pc=".$_SESSION['items']['P_code']."\">Details </a></td>
+                    <td><a href=\"?pc=".$_SESSION['items']['P_code']."\"><button>Details</button> </a></td>
                 </tr>
              </table>
             </div>");
@@ -33,14 +45,36 @@ if (mysqli_num_rows($result) > 0) {
     }
   }
 }
+else {
+    noStore();
+}
+}
+
+function newStore($id,$name,$dis){
+    global $con;
+    $query = "select * from store where S_id = '$id' limit 1";
+    $result=mysqli_query($con,$query);
+    if(mysqli_num_rows($result)>0){
+        $_SESSION['exist']=mysqli_fetch_assoc($result);
+        existStore();
+    }
+    else{
+    $query = "insert into `store`(`S_id`, `Name`, `Disc`) VALUES ('$id','$name','$dis')";
+    $result = mysqli_query($con,$query);
+    store($id);
+    }
+}
+
 
 
 function transaction($tr,$sort){
 global $con; 
         if ($tr == "in") {
-            $query = "select * from T_in GROUP BY $sort";
+            $query = "select * from t_in ORDER BY $sort DESC";
+            
         } elseif ($tr == "out") {
-            $query = "select * from T_out GROUP BY $sort";
+            $query = "select * from t_out ORDER BY $sort DESC";
+            
         }
     
         $result = mysqli_query($con, $query);
@@ -48,24 +82,22 @@ global $con;
             $_SESSION['Tr'] = mysqli_fetch_assoc($result);
         echo("
           <div id=\"Tresult\" style=\"display:block;\">
-            <table border=\"2px solid black\">
+            <table>
                <tr>
-                   <td>T id</td>
-                   <td> Product code</td>
-                   <td>Amount</td>
-                   <td>Type</td>
-                   <td> Date</td>
+                   <th>T id</td>
+                   <th> Product code</th>
+                   <th>Amount</th>
+                   <th>Type</th>
+                   <th> Date</th>
                 </tr>
-            </table>");
+        ");
      while (!empty($_SESSION['Tr'])){
       if (!empty($_SESSION['Tr'])){
         echo(" 
-            <table border=\"2px solid black\">
                 <tr>
                     <td>".$_SESSION['Tr']['T_id']."</td>
-                    <td><a id=\"menu\"
-                      href=\"?pc=".$_SESSION['Tr']['P_code']."\">".$_SESSION['Tr']['P_code']."</a>
-                    </td>
+                    <td> <a href=\"?pc=".$_SESSION['Tr']['P_code']."\">
+                    <button id=\"menu\">".$_SESSION['Tr']['P_code']."</button> </a></td>
                     <td>".$_SESSION['Tr']['Amount']."</td>
                     <td>
         ");
@@ -79,13 +111,13 @@ global $con;
         echo("     </td>
                    <td>".$_SESSION['Tr']['date']."</td>
                    </tr>
-            </table>
+            
         ");
         }
       $_SESSION['Tr'] = mysqli_fetch_assoc($result);
     
      }
-        echo("</div>");
+        echo("</table></div>");
         }
     }
 ?>

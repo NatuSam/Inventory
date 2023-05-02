@@ -22,8 +22,10 @@ body{
     margin-bottom: 0%;
     border: 2px solid rgb(00, 80, 80);  
     width: 400px;
+    
 }
-#ResultA, #ResultT{ 
+
+#Check, #Add, #Take,#Addnum, #Store,#newEmp, #Tr, #Fp{
     display: none;
     margin-left: 25%;
     width: fit-content;
@@ -32,19 +34,6 @@ body{
     border: 2px solid rgb(00, 80, 80);  
     width: 400px;
 }
-#Check, #Add, #Take,#Addnum, #Store,#newEmp, #Tr{
-    display: none;
-    margin-left: 25%;
-    width: fit-content;
-    font-size: larger;
-    padding: 40px;
-    border: 2px solid rgb(00, 80, 80);  
-    width: 400px;
-}
-
-
-
-
 #Tresult{
     display: none;
     width:fit-content;
